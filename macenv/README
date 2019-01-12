@@ -1,0 +1,2 @@
+docker build . -t cppenv
+docker container run --interactive --tty --mount type=bind,source="$(pwd)",target=/usr/share cppenv
