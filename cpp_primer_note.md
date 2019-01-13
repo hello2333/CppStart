@@ -6,6 +6,7 @@
 - C++有什么特性
 - 链接是什么
 - 如何在命令行里执行一个C++程序：要求依赖其他文件，接收命令行参数
+- C++文件的基本结构
 
 ### 2. C++ VS C
 C语言：
@@ -21,11 +22,7 @@ C++语言：
 
 问题：如何组合的呢？
 
-## Chapter02 开始学习C++
-### 1. 目标
-- C++文件的基本结构
-
-### 2. gcc VS g++
+### 4. gcc VS g++
 参考链接：[知乎文章:g++ vs gcc](https://www.zhihu.com/question/20940822)， [stackoverflow文章](https://stackoverflow.com/questions/172587/what-is-the-difference-between-g-and-gcc?r=SearchResults)
 
 GCC: GUN Compiler Collection
@@ -34,7 +31,7 @@ gcc: GUN C Compiler,gcc不能自动和使用的C++库链接
 
 g++: GUN C++ Compiler, g++ == gcc -xc++ -lstdc++ -shared-libgcc
 
-### 3. 程序结构
+### 5. 程序结构
 ```c++
 #include <iostream>
 
@@ -54,7 +51,35 @@ int main()
 #### cout输出
 cout：一个预定义的对象，*注意是个对象不是函数*，cout对象包含一个插入操作符号(<<)，可以理解为调用了cout对象的方法<<，该方法在屏幕上显示输入的字符串。
 
-## 函数
+流：随着时间的推移，字符是顺序生成和消耗的。
+
+### 6. 函数
 函数原型：返回值类型 + 函数名 + 参数列表 + 分号；原型只描述函数接口；应在首次使用函数之前提供其原型；
 
 函数定义：包含了函数代码；在使用函数前提供函数原型，但是函数的实现可以写在使用函数的地方的后边。
+
+## Chapter2 变量和基本类型
+### 1.目标
+- c++有哪些基本类型，每种类型的长度是多少？
+- c++是否区分有符号和无符号？
+- c++的字符支持那些操作？拼接、字符长度、子串等操作如何完成？string的底层实现是什么？算术类型和string如何转换？整型和char类型如何转换？
+- c++的const能修饰哪些元素？
+- c++
+
+### 2.字符类型
+| type          | description                                             | min length |
+| :------------ | :------------------------------------------------------ | ---------: |
+| char          | 在不同的机器上，可以是signed char,也可以是unsigned char      |       8bit |
+| unsigned char | 范围0～255                                               |       8bit |
+| signed char   | 范围-128～127                                            |       8bit |
+| wchar_t       | 宽字符                                                   |      16bit |
+| char16_t      | Unicode字符                                              |      16bit |
+| char32_t      | Unicode字符                                              |      32bit |
+
+- 什么情况下使用wchar_t和char16_6这种类型呢？
+
+### 4.类型转换
+无符号>有符号：有符合和无符号在一起时会自动被转换为无符号，负值在转换为有符号数时=负数+无符号数的模；
+
+未定义：当我们给带符号类型一个超出它表示范围的值时，结果是未定义的，结果可能是继续工作、崩溃或者生成垃圾数据等；
+
