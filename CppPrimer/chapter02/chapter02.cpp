@@ -1,15 +1,28 @@
 #include <iostream>
+//#include "chapter02Header1.h"  不能定义const变量两次
+#include "chapter02Header2.h"
 using namespace std;
 
+extern const int constValueExtern = 99;
 void signedWithUnsigned();
 void charSize();
 void intType();
 void varInit();
+void scopeTest();
+void pointerTest();
+void normalPointerTest();
+void constTest();
 
-int main() {
+int test() {
     signedWithUnsigned();
     charSize();
     varInit();
+    scopeTest();
+    normalPointerTest();
+    constTest();
+    pointerTest();
+
+    return 0;
 }
 
 void signedWithUnsigned() {
@@ -81,3 +94,36 @@ void varInit() {
     cout << "global: [" << global_str << "] " << global_int << endl;
     cout << "local:  [" << local_str << "] " << local_int << endl;
 }
+
+void scopeTest() {
+    int i = 100, sum = 0;
+    for (int i = 0; i < 10; i ++) {
+        sum += i;
+    }
+    cout << i << " " << sum << endl;
+}
+
+void normalPointerTest() {
+    int i = 3;
+    int *p = &i;
+    *p = *p * *p;
+    cout << "*p * *p = " << i << endl;
+
+   /*void * p1 = &i;
+    int * p2 = p1;
+    cout << "int *p2 = (void*) p1" */
+}
+
+void pointerTest() {
+    int i = 0;
+    /* int *ip = i;        //wrong 
+    int *ip1 = &i;
+    double * dp = &i;   //wrong */
+}
+
+void constTest() {
+    cout << "constValueExtern: " << constValueExtern << endl;
+    cout << "notExternConstValue in file1: " << notExternConstValue << endl;
+    //cout << "constValueExtern1: " << constValueExtern1 << endl; 必须定义，不得已不能使用
+}
+
