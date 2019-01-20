@@ -70,12 +70,12 @@ cout：一个预定义的对象，*注意是个对象不是函数*，cout对象�
 #### 2.1 字符类型
 | type          | description                                             | min length |
 | :------------ | :------------------------------------------------------ | ---------: |
-| char          | 在不同的机器上，可以是signed char,也可以是unsigned char      |       8bit |
-| unsigned char | 范围0～255                                               |       8bit |
-| signed char   | 范围-128～127                                            |       8bit |
-| wchar_t       | 宽字符                                                   |      16bit |
-| char16_t      | Unicode字符                                              |      16bit |
-| char32_t      | Unicode字符                                              |      32bit |
+| char          | 在不同的机器上，可以是signed char,也可以是unsigned char |       8bit |
+| unsigned char | 范围0～255                                              |       8bit |
+| signed char   | 范围-128～127                                           |       8bit |
+| wchar_t       | 宽字符                                                  |      16bit |
+| char16_t      | Unicode字符                                             |      16bit |
+| char32_t      | Unicode字符                                             |      32bit |
 
 ##### utf8 vs utf16 vs utf32
 [stackoverflow: utf8-utf16-utf32](https://stackoverflow.com/questions/496321/utf-8-utf-16-and-utf-32)
@@ -149,8 +149,11 @@ using doubleAlias = double;
 
 #### 4.4 auto
 const int ci = 1;
+
 constexpr int *np = \&ci; 定义了一个常量指针，这个指针是int类型；——顶层const
+
 auto d = ci; d是一个整型，但不是常量整形；
+
 auto e = \&ci; 定义了一个指向常量的指针；——底层const
 
 #### 4.5 decltype
@@ -171,3 +174,79 @@ auto e = \&ci; 定义了一个指向常量的指针；——底层const
   - const、constexpr
   - typedef、auto、decltype
 - 理论上，采用复杂性是为了达成某种目的与优化而采取的手段，后续需要研究，C++这些复杂的类型有什么作用？引用、auto、typedef的使用场景是什么？有了const还有constexpr真的有意义吗？引用、auto、typedef、constexpr在开源代码或者真正的项目开发里使用多吗？
+
+## Chapter03 string\vector\array
+### 1. string
+- 初始化：
+  - 使用等于号赋值为拷贝初始化(使用拷贝初始化是将等号右侧的值拷贝到等号左侧的对象中),使用圆括号赋值为直接初始化(可以理解为调用类的构造函数);
+  - string s1;
+  - string s1 = s2;
+  - string s1(s2);
+  - string s1("test");
+  - string s1 = "test";
+  - string s1(10, 'c');
+- 操作：
+  - boolean s.empty();
+  - string::size_type s.size()：size_type是一个操作系统无关的类型，它是一个无符号整形，且一定能**表示任何字符串的长度**
+  - s1 + s2：返回的对象，是一个新生成的对象；使用加号连接字符串时，加号的至少一边需要是一个string类型的变量，**字符串字面值不是string类型**
+  - s1 == s2：按字典序进行比较，大小写敏感，如果s1="hello"，s2="helloWorld"，则s1 \< s2;
+  - 处理每个字符：for(declaration: expression) {...}，如果需要修改字符串中的字符，则必须把循环变量定义为引用类型；
+  - s\[n\]：通过下表访问字符串中的某个元素；
+- 读写string对象：
+  - cin >> s1：读取字符串，字符串以空格符、换行符、制表符等分隔；
+  - getline(cin, s1)：一次读取一行，以换行符分隔;
+- #include<cctype>：如果想访问操作字符的库函数，需要include头文件cctype，cctype头文件中的函数在std命名空间下，但是如果引入的时ctype.h则不是在std命名空间下了；
+
+### 2. vector
+- vector是一个类模板，模板本身不是类或者函数，编译器根据模板创建类或者函数额过程称为实例化；
+- 初始化：
+  - vector\<string\> v1 = {"abc", "cde", "efg"}:
+  - vector\<string\> v1(10):
+  - vector\<string\> v1 {10}:
+  - vector\<string\> v1 = {10}:
+  - vector\<int\> v1 = {0,1,2,3}
+  - vector\<int\> v1(10):10个初始值为0的vector；
+  - vector\<int\> v1{10}：包含一个元素10的vector；
+  - vector\<int\> v1{10, 0}：包含两个元素10、0的vector
+  - vector\<int\> v1(10, 0)：包含10个元素，每个元素的初始值为0的vector；
+  - vector\<int\> v1(v2)
+  - vector\<int\> v1 = v2
+  - vector\<int\> v1:这个默认初始化是创建了一个空vector，潜在元素类型是T；这个和java是不同的，java中这样定义会创建一个null；
+- 支持的操作：
+| string    | vector         | desp                                                               |
+| :-------- | :------------- | :----------------------------------------------------------------- |
+| s.empty() | v.empty()      | -                                                                  |
+| s.size()  | v.size()       | 返回类型是vector\<int\>::size_type,和string的size_type是不同的类型 |
+| s\[n\]    | v\[n\]         | -                                                                  |
+| s1 + s2   | -              | -                                                                  |
+| s1 = s2   | v1=v2          | -                                                                  |
+| s1==s2    | v1==v2         | 在vector中,比较仅适用于两个vector的元素相同且可比较的情况下        |
+| s1!=s2    | v1!=v2         | -                                                                  |
+| <,<=,>,>= | <,<=,>,>=      | -                                                                  |
+| -         | v.push_back(t) | -                                                                  |
+- 添加元素:
+  - 不同于Java,定义vector时不需要指定vector的长度,这样后续添加元素时性能会更好;(后续看为什么这样,即vector的底层实现)
+  - 如果循环体内包含有向vector对象添加元素的,则不能使用for循环;
+  - 不能用下标形式添加元素:这也是和java不一样的一点,试图用下标的形式区访问一个不存在的元素将引发错误,且这个错误不会被编译器发现,是一个运行时不可知的错误;
+- 和Java不同的另一个点:如果vector被const修饰,则vector中的元素的值不能被修改,但是java中,如果一个容器被const修饰,只是它不能再指向其他容器,但是他的元素是可以修改的;
+
+### 3. iterator
+- 获取迭代器:
+  - 有迭代器的类型同时拥有返回迭代器的成员begin()、cbegin()、end()、cend();
+  - end()或者cend():返回指向容器的“尾元素的下一个位置”,即指向容器本不存在的“尾后元素”;
+  - 如果容器为空,begin和end返回的是同一个迭代器,都是尾后迭代器;
+- 迭代器运算符:
+  - ==和!=:如果两个迭代器指向元素的元素相同或者都是同一个容器的尾后迭代器,则他们相等,否则两个迭代器不相等;
+  - \*iter:返回iter所指元素的引用;假设有一个vector\<string\>对象的引用,判断string是否为空字符串时,要使用(\*iter).empty()或者iter->empty(),而不是iter.empty(),因为迭代器iter本身是没有empty这个成员的;
+  - iter->mem:解引用iter并获取该元素的名为mem的成员,等价于(\*iter).empty();
+  - ++ iter:令迭代器指向容器的下一个元素;
+  - \-\- iter:另迭代器指向容器的上一个元素;不能对end返回的元素进行递增或者解引用的操作,虽然递增不会引起编译器报错,但可能产生无法预料的异常;
+- 迭代器的类型:
+  - vector\<T\>::iterator it:对象可读可写
+  - vector\<T\>::const_iterator:对象只能读不能写,cbegin返回的时这种类型;如果容器时常量,只能使用const_iterator类型(但是使用iterator修改元素的值竟然也成功了,**amazing......**);
+  
+### 总结
+- 了解string、vetor、array的初始化和库中支持的基本操作；
+- string注意点：两个string对象相加返回的是一个新的对象；使用for遍历string的元素时，如果希望修改元素内容，需要在for中使用引用；
+- vector注意点:不要在for循环里往vector中添加元素;不能使用下表添加元素;常量的vector的元素不能修改;注意vector初始化中丰富的坑人写法:)
+- iterator注意点:如果要访问迭代器指向的元素,需要对迭代器解引用;
