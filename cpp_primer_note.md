@@ -58,7 +58,7 @@ cout：一个预定义的对象，*注意是个对象不是函数*，cout对象�
 
 函数定义：包含了函数代码；在使用函数前提供函数原型，但是函数的实现可以写在使用函数的地方的后边。
 
-## Chapter2 变量和基本类型
+## Chapter02 变量和基本类型
 ### 1.目标
 - c++有哪些基本类型，每种类型的长度是多少？
 - c++是否区分有符号和无符号？
@@ -78,12 +78,12 @@ cout：一个预定义的对象，*注意是个对象不是函数*，cout对象�
 | char32_t      | Unicode字符                                              |      32bit |
 
 ##### utf8 vs utf16 vs utf32
-[stackoverflow:utf8-utf16-utf32](https://stackoverflow.com/questions/496321/utf-8-utf-16-and-utf-32)
+[stackoverflow: utf8-utf16-utf32](https://stackoverflow.com/questions/496321/utf-8-utf-16-and-utf-32)
 - 什么情况下使用wchar_t和char16_t这种类型呢？
 - Unicode：是一种字符集，每一个字符(包括亚洲字符、英文字符等)对应Unicode字符集中的一条记录；
 - utf8 utf16 utf32:这三种对应的是三种将字符转换为字节码的方式，不管用什么方式转换后的二进制对应的十进制都是同一个值；
 
-#### 2.2.类型转换
+#### 2.2 类型转换
 无符号>有符号：有符合和无符号在一起时会自动被转换为无符号，负值在转换为有符号数时=负数+无符号数的模；
 
 **未定义**：当我们给带符号类型一个超出它表示范围的值时，结果是未定义的，结果可能是继续工作、崩溃或者生成垃圾数据等；
@@ -136,3 +136,38 @@ const和指针：
   - const int i = 3; const int *p = \&i(合法); int *p1 = \&i(不合法);
 - 常量指针：指针不可以指向其他对象，但是可以通过指针修改对象的值（如果指向的对象不是一个常量的话）；
   - const int i = 3; int *const p = \&i;
+
+constexpr和常量表达式
+- 定义：常量表达式是指值不会改变并且在编译过程就能得到计算结果的表达式；
+- 一般来说，如果你认定一个变量是常量表达式，那就把它声明成constexpr类型；
+- 常量表达式的值需要在编译时就得到计算，因此constexpr修饰的类型一般比较简单，值也显而易见，算术类型、引用、指针都属于字面值类型，但是自定义类、string类则不属于；
+- 在constexpr声明中如果定义了一个指针，限定符constexpr仅对指针有效，声明此指针是一个常量，不能指向其他对象，但是与指针所指的值无关，指针所指的值可以是常量也可以是非常量；
+
+#### 4.3 类型别名
+typedef double wages;
+using doubleAlias = double;
+
+#### 4.4 auto
+const int ci = 1;
+constexpr int *np = \&ci; 定义了一个常量指针，这个指针是int类型；——顶层const
+auto d = ci; d是一个整型，但不是常量整形；
+auto e = \&ci; 定义了一个指向常量的指针；——底层const
+
+#### 4.5 decltype
+- decltype返回括号里变量或者表达式结果的类型；
+- 特别说明：
+  - decltype(r)：如果r是引用类型，但是想让结果类型是r所指向的类型，可以把r作为表达式的一部分，decltype(r+0)返回的类型就是r所指向的类型；
+  - decltype(*p)：如果p是指针（假设是int\*指针），这个解引用操作返回的是引用类型int&而非int；
+  - decltype((i))：i是一个int类型，这里返回的是int&而不是int；（这种奇妙且易错的设定说明场景下会使用呢：））
+
+### 总结
+- C++本身的类型非常繁多：
+  - 数值类型：short、int、long、long long、double、float，每一种整形又区分有符号和无符号；
+  - 字符类型：char、wchar_t、char16_t、char32_t，char本身也区分有符号和无符号，char16_t最少占用2个字节，char32_t占用4个字节，char最少占用1个字节；
+  - 复合类型：引用、指针
+- 类型的声明、定义与初始化
+  - 块外未初始化的变量会赋一个初始值，但是块内未初始化的变量会赋一个未定义值，未定义值可能引起无法预料的错误；
+  - 定义 = 声明 + 初始化（赋值）；
+  - const、constexpr
+  - typedef、auto、decltype
+- 理论上，采用复杂性是为了达成某种目的与优化而采取的手段，后续需要研究，C++这些复杂的类型有什么作用？引用、auto、typedef的使用场景是什么？有了const还有constexpr真的有意义吗？引用、auto、typedef、constexpr在开源代码或者真正的项目开发里使用多吗？
